@@ -1,5 +1,5 @@
 <?php
-
+// testing git
 $_GET['fuse']='billing';
 $_GET['action'] = 'gatewaycallback';
 $_GET['plugin'] = '2checkout';
