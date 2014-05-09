@@ -128,7 +128,7 @@ class Plugin2checkout extends GatewayPlugin
         $strURL .= "&x_invoice_num=".$params["invoiceNumber"];
 
         $currency->_loadCurrency($this->settings->get('Default Currency'));
-        $formatedCurrency = sprintf("%01.".$currency->cache[$currency]['precision']."f", round($params["invoiceTotal"], $currency->cache[$currency]['precision']));
+        $formatedCurrency = sprintf("%01.".$currency->cache[$this->settings->get('Default Currency')]['precision']."f", round($params["invoiceTotal"], $currency->cache[$this->settings->get('Default Currency')]['precision']));
         $strURL .= "&x_amount=".$formatedCurrency;
 
         $strURL .= "&id_type=1";
