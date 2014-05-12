@@ -164,8 +164,15 @@ class Plugin2checkoutCallback extends PluginCallback
         if($SecretWord != ''){
             // IT WILL CONSIDER FRAUD, WHEN:
             // - The 2checkout MD5 hash is not valid
-            //   The 2checkout MD5 hash structure is: md5(secret word + vendor number + order number + total )
-            $string_to_hash = $SecretWord.$VendorNumber.$this->response['order_number'].$this->response['x_amount'];
+            //   The 2checkout MD5 hash structure is:               uppercase( md5( secret word + vendor number + order number + total ) )
+            //   But, the 2checkout MD5 hash structure for demo is: uppercase( md5( secret word + vendor number +            1 + total ) )
+            //  ( https://www.2checkout.com/documentation/checkout/passback/validation )
+            if($this->response['demo'] != 'Y'){
+                $string_to_hash = $SecretWord.$VendorNumber.$this->response['order_number'].$this->response['x_amount'];
+            }else{
+                $string_to_hash = $SecretWord.$VendorNumber.'1'.$this->response['x_amount'];
+            }
+
             $check_key = strtoupper(md5($string_to_hash));
             if($check_key != $this->response['x_MD5_Hash']){
                 $this->response['FRAUD REASON'] = 'INVALID HASH';
