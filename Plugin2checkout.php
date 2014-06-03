@@ -10,86 +10,86 @@ class Plugin2checkout extends GatewayPlugin
     function getVariables()
     {
         $variables = array (
-                   /*T*/"Plugin Name"/*/T*/ => array (
+                   lang("Plugin Name") => array (
                                         "type"          =>"hidden",
-                                        "description"   =>/*T*/"How CE sees this plugin (not to be confused with the Signup Name)"/*/T*/,
-                                        "value"         =>/*T*/"2Checkout"/*/T*/
+                                        "description"   =>lang("How CE sees this plugin (not to be confused with the Signup Name)"),
+                                        "value"         =>lang("2Checkout")
                                        ),
-                   /*T*/"Seller ID"/*/T*/ => array (
+                   lang("Seller ID") => array (
                                         "type"          =>"text",
-                                        "description"   =>/*T*/"ID used to identify you to 2checkout.com.<br>NOTE: This ID is required if you have selected 2checkout as a payment gateway for any of your clients."/*/T*/,
+                                        "description"   =>lang("ID used to identify you to 2checkout.com.<br>NOTE: This ID is required if you have selected 2checkout as a payment gateway for any of your clients."),
                                         "value"         =>""
                                        ),
-                   /*T*/"Secret Word"/*/T*/ => array (
+                   lang("Secret Word") => array (
                                         "type"          =>"text",
-                                        "description"   =>/*T*/"'Secret Word' used to calculate the MD5 hash. <br>NOTE: Please take in count, you will also need to set the 'Secret Word' on the 2Checkout Site Management page, and it is to avoid frauds."/*/T*/,
+                                        "description"   =>lang("'Secret Word' used to calculate the MD5 hash. <br>NOTE: Please take in count, you will also need to set the 'Secret Word' on the 2Checkout Site Management page, and it is to avoid frauds."),
                                         "value"         =>""
                                        ),
-                   /*T*/"Purchase Routine"/*/T*/=> array(
+                   lang("Purchase Routine")=> array(
                                         "type"          => "options",
-                                        "description"   => /*T*/"This setting allows you to determine which purchase routine will be better suited for your site."/*/T*/,
-                                        "options"       => array(0 => /*T*/ "Standard Purchase Routine" /*/T*/,
-                                                                 1 => /*T*/ "Single Page Checkout" /*/T*/),
+                                        "description"   => lang("This setting allows you to determine which purchase routine will be better suited for your site."),
+                                        "options"       => array(0 => lang( "Standard Purchase Routine" ),
+                                                                 1 => lang( "Single Page Checkout" )),
                                         "value"         => 0
                                        ),
-                    /*T*/"Demo Mode"/*/T*/ => array (
+                    lang("Demo Mode") => array (
                                         "type"          =>"yesno",
-                                        "description"   =>/*T*/"Select YES if you want to set 2checkout into Demo Mode for testing. (<b>NOTE:</b> You must set to NO before accepting actual payments through this processor.)"/*/T*/,
+                                        "description"   =>lang("Select YES if you want to set 2checkout into Demo Mode for testing. (<b>NOTE:</b> You must set to NO before accepting actual payments through this processor.)"),
                                         "value"         =>"0"
                                        ),
-                   /*T*/"Accept CC Number"/*/T*/ => array (
+                   lang("Accept CC Number") => array (
                                         "type"          =>"hidden",
-                                        "description"   =>/*T*/"Selecting YES allows the entering of CC numbers when using this plugin type. No will prevent entering of cc information"/*/T*/,
+                                        "description"   =>lang("Selecting YES allows the entering of CC numbers when using this plugin type. No will prevent entering of cc information"),
                                         "value"         =>"0"
                                        ),
-                   /*T*/"Visa"/*/T*/ => array (
+                   lang("Visa") => array (
                                         "type"          =>"yesno",
-                                        "description"   =>/*T*/"Select YES to allow Visa card acceptance with this plugin.  No will prevent this card type."/*/T*/,
+                                        "description"   =>lang("Select YES to allow Visa card acceptance with this plugin.  No will prevent this card type."),
                                         "value"         =>"0"
                                        ),
-                   /*T*/"MasterCard"/*/T*/ => array (
+                   lang("MasterCard") => array (
                                         "type"          =>"yesno",
-                                        "description"   =>/*T*/"Select YES to allow MasterCard acceptance with this plugin. No will prevent this card type."/*/T*/,
+                                        "description"   =>lang("Select YES to allow MasterCard acceptance with this plugin. No will prevent this card type."),
                                         "value"         =>"0"
                                        ),
-                   /*T*/"AmericanExpress"/*/T*/ => array (
+                   lang("AmericanExpress") => array (
                                         "type"          =>"yesno",
-                                        "description"   =>/*T*/"Select YES to allow American Express card acceptance with this plugin. No will prevent this card type."/*/T*/,
+                                        "description"   =>lang("Select YES to allow American Express card acceptance with this plugin. No will prevent this card type."),
                                         "value"         =>"0"
                                        ),
-                   /*T*/"Discover"/*/T*/ => array (
+                   lang("Discover") => array (
                                         "type"          =>"yesno",
-                                        "description"   =>/*T*/"Select YES to allow Discover card acceptance with this plugin. No will prevent this card type."/*/T*/,
+                                        "description"   =>lang("Select YES to allow Discover card acceptance with this plugin. No will prevent this card type."),
                                         "value"         =>"0"
                                        ),
-                   /*T*/"Invoice After Signup"/*/T*/ => array (
+                   lang("Invoice After Signup") => array (
                                         "type"          =>"yesno",
-                                        "description"   =>/*T*/"Select YES if you want an invoice sent to the customer after signup is complete."/*/T*/,
+                                        "description"   =>lang("Select YES if you want an invoice sent to the customer after signup is complete."),
                                         "value"         =>"1"
                                        ),
-                   /*T*/"Signup Name"/*/T*/ => array (
+                   lang("Signup Name") => array (
                                         "type"          =>"text",
-                                        "description"   =>/*T*/"Select the name to display in the signup process for this payment type. Example: eCheck or Credit Card."/*/T*/,
+                                        "description"   =>lang("Select the name to display in the signup process for this payment type. Example: eCheck or Credit Card."),
                                         "value"         =>"Credit Card"
                                        ),
-                   /*T*/"Dummy Plugin"/*/T*/ => array (
+                   lang("Dummy Plugin") => array (
                                         "type"          =>"hidden",
-                                        "description"   =>/*T*/"1 = Only used to specify a billing type for a customer. 0 = full fledged plugin requiring complete functions"/*/T*/,
+                                        "description"   =>lang("1 = Only used to specify a billing type for a customer. 0 = full fledged plugin requiring complete functions"),
                                         "value"         =>"0"
                                        ),
-                   /*T*/"Auto Payment"/*/T*/ => array (
+                   lang("Auto Payment") => array (
                                         "type"          =>"hidden",
-                                        "description"   =>/*T*/"No description"/*/T*/,
+                                        "description"   =>lang("No description"),
                                         "value"         =>"0"
                                        ),
-                   /*T*/"30 Day Billing"/*/T*/ => array (
+                   lang("30 Day Billing") => array (
                                         "type"          =>"hidden",
-                                        "description"   =>/*T*/"Select YES if you want ClientExec to treat monthly billing by 30 day intervals.  If you select NO then the same day will be used to determine intervals."/*/T*/,
+                                        "description"   =>lang("Select YES if you want ClientExec to treat monthly billing by 30 day intervals.  If you select NO then the same day will be used to determine intervals."),
                                         "value"         =>"0"
                                        ),
-                   /*T*/"Check CVV2"/*/T*/ => array (
+                   lang("Check CVV2") => array (
                                         "type"          =>"hidden",
-                                        "description"   =>/*T*/"Select YES if you want to accept CVV2 for this plugin."/*/T*/,
+                                        "description"   =>lang("Select YES if you want to accept CVV2 for this plugin."),
                                         "value"         =>"0"
                                        )
         );
