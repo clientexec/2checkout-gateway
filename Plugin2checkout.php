@@ -126,7 +126,11 @@ class Plugin2checkout extends GatewayPlugin
         // Basic parameters
         $strURL .= "?x_login=".$params["plugin_2checkout_Seller ID"];
         $strURL .= "&x_invoice_num=".$params["invoiceNumber"];
-        $strURL .= "&x_amount=".$currency->format($this->settings->get('Default Currency'), $params["invoiceTotal"]);
+
+        $currency->_loadCurrency($this->settings->get('Default Currency'));
+        $formatedCurrency = sprintf("%01.".$currency->cache[$this->settings->get('Default Currency')]['precision']."f", round($params["invoiceTotal"], $currency->cache[$this->settings->get('Default Currency')]['precision']));
+        $strURL .= "&x_amount=".$formatedCurrency;
+
         $strURL .= "&id_type=1";
 
         // Product Creation code (so CE can send 2CO on-the-fly orders,
