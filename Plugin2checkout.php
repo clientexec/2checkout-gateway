@@ -133,6 +133,8 @@ class Plugin2checkout extends GatewayPlugin
 
         $strURL .= "&id_type=1";
 
+        $strUrl .= "&currency_code=" . $this->user->getCurrency();
+
         // Product Creation code (so CE can send 2CO on-the-fly orders,
         // as it does not store 2CO information yet.)
         /*
