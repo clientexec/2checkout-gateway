@@ -103,6 +103,7 @@ class Plugin2checkout extends GatewayPlugin
     {
         //Function needs to build the url to the payment processor, then redirect
         //Plugin variables can be accesses via $params["plugin_[pluginname]_[variable]"] (ex. $params["plugin_2checkout_SellerID"])
+        $tempInvoice = new Invoice($params['invoiceNumber']);
 
         $return_url = mb_substr($params['clientExecURL'],-1,1) == "//" ? $params['clientExecURL']."plugins/gateways/2checkout/callback.php" : $params['clientExecURL']."/plugins/gateways/2checkout/callback.php";
 
@@ -146,6 +147,44 @@ class Plugin2checkout extends GatewayPlugin
         $strURL .= "&c_tangible=N";
         */
 
+        // ADDING DESCRIPTION TO THE PAYMENT
+        //default description
+        $strDescription = "Invoice #".$params['invoiceNumber'];
+        $invoiceEntries = $tempInvoice->getInvoiceEntries();
+
+        require_once 'modules/billing/models/InvoiceEntriesGateway.php';
+        $InvoiceEntriesGateway = new InvoiceEntriesGateway($this->user);
+
+        //let's build a better description
+        foreach ($invoiceEntries as $entry) {
+            //I really only want the main entry not the coupon so let's filter on type
+            if ( (count($invoiceEntries) == 2) && ($entry->getBillingTypeID() == BILLINGTYPE_COUPON_DISCOUNT) ) {
+                continue;
+            } else if ( (count($invoiceEntries) > 2) && in_array($entry->getBillingTypeID(), array(BILLINGTYPE_COUPON_DISCOUNT,BILLINGTYPE_PACKAGE_ADDON))) {
+                continue;
+            }
+
+            if ($strDescription == "Invoice #".$params['invoiceNumber'] || $entry->getBillingTypeID() == BILLINGTYPE_PACKAGE) {
+                $strDescription = $InvoiceEntriesGateway->getFullEntryDescription($entry->getId());
+            }
+
+            if($entry->getBillingTypeID() == BILLINGTYPE_PACKAGE){
+                break 1;
+            }
+        }
+
+        if ($strDescription == "") {
+            $strDescription = $tempInvoice->getDescription();
+        }
+
+        //(128 characters max)
+        if(strlen($strDescription) > 128){
+            $strDescription = substr($strDescription, 0, 125)."...";
+        }
+        $strURL .= "&c_name=".$strDescription;
+        // ADDING DESCRIPTION TO THE PAYMENT
+
+
         // If Demo Mode is set, pass appropriate parameter.
         if ($params["plugin_2checkout_Demo Mode"]==1)
             $strURL .= "&demo=Y";
@@ -174,7 +213,6 @@ class Plugin2checkout extends GatewayPlugin
             $strURL .= "&signup=0";
         $strURL .= "&ce_invoice_num=".$params['invoiceNumber'];
 
-        $tempInvoice = new Invoice($params['invoiceNumber']);
         $tInvoiceHash = $tempInvoice->generateInvoiceHash($params['invoiceNumber']);
         if(!is_a($tInvoiceHash, 'CE_Error')){
             $strURL .= "&ce_invoice_hash=".$tInvoiceHash;
