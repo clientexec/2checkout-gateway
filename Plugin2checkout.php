@@ -185,7 +185,7 @@ class Plugin2checkout extends GatewayPlugin
         if(strlen($strDescription) > 128){
             $strDescription = substr($strDescription, 0, 125)."...";
         }
-        $strURL .= "&c_name=".$strDescription;
+       // $strURL .= "&c_name=".$strDescription;
         // ADDING DESCRIPTION TO THE PAYMENT
 
 
