@@ -138,7 +138,7 @@ class Plugin2checkout extends GatewayPlugin
         // Supported Currency Code:
         // ARS, AUD, BRL, GBP, CAD, DKK, EUR, HKD, INR, ILS, JPY, MYR, MXN, NZD, NOK, PHP, RON, RUB, SGD, ZAR, SEK, CHF, TRY, AED, USD
         // https://www.2checkout.com/documentation/checkout/parameters
-        $strUrl .= "&currency_code=" . $this->user->getCurrency();
+        $strUrl .= "&currency_code=" . $params['userCurrency'];
 
         // Product Creation code (so CE can send 2CO on-the-fly orders,
         // as it does not store 2CO information yet.)
