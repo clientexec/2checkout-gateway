@@ -95,8 +95,17 @@ class Plugin2checkoutCallback extends PluginCallback
             }
         }
 
-        //Forward User needs to come after PaymentAccepted or PaymentRejected
-        $cPlugin->ForwardUser($lSignUp, true);
+        //Need to check to see if user is coming from signup
+        if ( $lSignUp == 1 ) {
+            if ( $this->settings->get('Signup Completion URL') != '' ) {
+                $returnURL = $this->settings->get('Signup Completion URL'). '?success=1';
+            } else {
+                $returnURL = CE_Lib::getSoftwareURL()."/order.php?step=complete&pass=1";
+            }
+        } else {
+            $returnURL = CE_Lib::getSoftwareURL()."/index.php?fuse=billing&paid=1&controller=invoice&view=invoice&id=" . $lInvoiceID;
+        }
+        header("Location: " . $returnURL);
     }
 
     function isFraudTransaction(&$notifyAdmin)
@@ -219,7 +228,7 @@ class Plugin2checkoutCallback extends PluginCallback
             );
         }else{
             require_once 'modules/billing/models/Invoice_EventLog.php';
-            $Log = Invoice_EventLog::newInstance(false, 
+            $Log = Invoice_EventLog::newInstance(false,
                 $CustomerId,
                 $InvoiceId,
                 INVOICE_EVENTLOG_2CHECKOUT_CALLBACK,
