@@ -9,9 +9,9 @@ class Plugin2checkoutCallback extends PluginCallback
 
     function processCallback()
     {
-       if (isset($_REQUEST['ce_invoice_num'])) {
+        if (isset($_REQUEST['ce_invoice_num'])) {
             $this->response = $_REQUEST;
-        }else{
+        } else {
             // ignore blank browser requests
             return;
         }
@@ -35,28 +35,28 @@ class Plugin2checkoutCallback extends PluginCallback
 
         //Determine if payment was made & make sure that it was not made in demo mode
         if (($lInvoicePaid == 'Y' || $lInvoicePaid == 'K') && $this->response['demo'] != 'Y') {
-            if($this->isFraudTransaction($notifyAdmin)){
+            if ($this->isFraudTransaction($notifyAdmin)) {
                 $transaction = "Payment rejected - Reason: FRAUD";
                 $cPlugin->PaymentRejected($transaction, false);
-            }else{
+            } else {
                 $transaction = " 2checkout Payment of $lPricePaid was accepted (OrderID:".$lOrderID.")";
                 $cPlugin->PaymentAccepted($lPricePaid, $transaction);
             }
         } else {
             //if the payment was made in demo mode let's log it
-            if($this->response['demo']=='Y') {
-                if($this->isFraudTransaction($notifyAdmin)){
+            if ($this->response['demo']=='Y') {
+                if ($this->isFraudTransaction($notifyAdmin)) {
                     $transaction = "Payment rejected - Reason: FRAUD (DEMO MODE)";
                     $cPlugin->PaymentRejected($transaction, false);
-                }else{
+                } else {
                     $transaction = " 2checkout Payment of $lPricePaid was accepted (OrderID:".$lOrderID.") (DEMO MODE)";
                     $cPlugin->PaymentAccepted($lPricePaid, $transaction);
                 }
             } else {
                 //if not in demo mode we will log the reason_response_code from 2co
-                if(!isset($this->response['ce_invoice_num'])){
+                if (!isset($this->response['ce_invoice_num'])) {
                     $this->_log2CheckoutCallback(0, true);
-                }else{
+                } else {
                     $this->_log2CheckoutCallback($this->response['ce_invoice_num'], true);
                 }
 
@@ -66,7 +66,7 @@ class Plugin2checkoutCallback extends PluginCallback
             }
         }
 
-        if($notifyAdmin){
+        if ($notifyAdmin) {
             // Send an email to admin and let him know about the invoice payment,
             // and that he must set a Secret Word in the plugin configuration.
             if ($recipients = $this->settings->get('Application Error Notification')) {
@@ -96,8 +96,8 @@ class Plugin2checkoutCallback extends PluginCallback
         }
 
         //Need to check to see if user is coming from signup
-        if ( $lSignUp == 1 ) {
-            if ( $this->settings->get('Signup Completion URL') != '' ) {
+        if ($lSignUp == 1) {
+            if ($this->settings->get('Signup Completion URL') != '') {
                 $returnURL = $this->settings->get('Signup Completion URL'). '?success=1';
             } else {
                 $returnURL = CE_Lib::getSoftwareURL()."/order.php?step=complete&pass=1";
@@ -105,6 +105,7 @@ class Plugin2checkoutCallback extends PluginCallback
         } else {
             $returnURL = CE_Lib::getSoftwareURL()."/index.php?fuse=billing&paid=1&controller=invoice&view=invoice&id=" . $lInvoiceID;
         }
+
         header("Location: " . $returnURL);
     }
 
@@ -115,16 +116,14 @@ class Plugin2checkoutCallback extends PluginCallback
         // - The ce_invoice_hash can not be decoded
         // - The invoice id taken from decoding the ce_invoice_hash do not match with the ce_invoice_num
         $tInvoiceId = 0;
-        if(isset($this->response['ce_invoice_hash']) && $this->response['ce_invoice_hash'] != "WRONGHASH"){
+        if (isset($this->response['ce_invoice_hash']) && $this->response['ce_invoice_hash'] != "WRONGHASH") {
             $tInvoiceId = Invoice::decodeInvoiceHash($this->response['ce_invoice_hash']);
         }
-        if(!isset($this->response['ce_invoice_num'])){
+        if (!isset($this->response['ce_invoice_num'])) {
             $this->response['FRAUD REASON'] = 'INVALID INVOICE NUMBER';
             $this->_log2CheckoutCallback(0, true);
             return true;
-        }elseif(is_a($tInvoiceId, 'CE_Error')
-          || $tInvoiceId == 0
-          || $tInvoiceId != $this->response['ce_invoice_num']){
+        } elseif (is_a($tInvoiceId, 'CE_Error') || $tInvoiceId == 0 || $tInvoiceId != $this->response['ce_invoice_num']) {
             $this->response['FRAUD REASON'] = 'INVALID INVOICE NUMBER'.(is_a($tInvoiceId, 'CE_Error'))? '. '.$tInvoiceId->getMessage() : '';
             $this->_log2CheckoutCallback($this->response['ce_invoice_num'], true);
             return true;
@@ -132,9 +131,7 @@ class Plugin2checkoutCallback extends PluginCallback
 
         // IT WILL CONSIDER FRAUD, WHEN:
         // - There is no order_number (empty or NA)
-        if(!isset($this->response['order_number'])
-          || $this->response['order_number'] == ''
-          || $this->response['order_number'] == 'NA'){
+        if (!isset($this->response['order_number']) || $this->response['order_number'] == '' || $this->response['order_number'] == 'NA') {
             $this->response['FRAUD REASON'] = 'INVALID ORDER NUMBER';
             $this->_log2CheckoutCallback($tInvoiceId, true);
             return true;
@@ -143,8 +140,7 @@ class Plugin2checkoutCallback extends PluginCallback
         // IT WILL CONSIDER FRAUD, WHEN:
         // - Seller ID do not match
         $VendorNumber = $this->settings->get('plugin_2checkout_Seller ID');
-        if(!isset($this->response['x_login'])
-          || $this->response['x_login'] != $VendorNumber){
+        if (!isset($this->response['x_login']) || $this->response['x_login'] != $VendorNumber) {
             $this->response['FRAUD REASON'] = 'INVALID SELLER ID';
             $this->_log2CheckoutCallback($tInvoiceId, true);
             return true;
@@ -162,7 +158,7 @@ class Plugin2checkoutCallback extends PluginCallback
             ."AND `amount` = ".$this->response['x_amount']." ";
         $result = $this->db->query($selectQuery, $this->response['order_number']);
         list($numTransactions) = $result->fetch();
-        if($numTransactions > 0){
+        if ($numTransactions > 0) {
             $this->response['FRAUD REASON'] = 'DUPLICATED TRANSACTION';
             $this->_log2CheckoutCallback($tInvoiceId, true);
             return true;
@@ -170,25 +166,25 @@ class Plugin2checkoutCallback extends PluginCallback
 
         $notifyAdmin = false;
         $SecretWord = $this->settings->get('plugin_2checkout_Secret Word');
-        if($SecretWord != ''){
+        if ($SecretWord != '') {
             // IT WILL CONSIDER FRAUD, WHEN:
             // - The 2checkout MD5 hash is not valid
             //   The 2checkout MD5 hash structure is:               uppercase( md5( secret word + vendor number + order number + total ) )
             //   But, the 2checkout MD5 hash structure for demo is: uppercase( md5( secret word + vendor number +            1 + total ) )
             //  ( https://www.2checkout.com/documentation/checkout/passback/validation )
-            if($this->response['demo'] != 'Y'){
+            if ($this->response['demo'] != 'Y') {
                 $string_to_hash = $SecretWord.$VendorNumber.$this->response['order_number'].$this->response['x_amount'];
-            }else{
+            } else {
                 $string_to_hash = $SecretWord.$VendorNumber.'1'.$this->response['x_amount'];
             }
 
             $check_key = strtoupper(md5($string_to_hash));
-            if($check_key != $this->response['x_MD5_Hash']){
+            if ($check_key != $this->response['x_MD5_Hash']) {
                 $this->response['FRAUD REASON'] = 'INVALID HASH';
                 $this->_log2CheckoutCallback($tInvoiceId, true);
                 return true;
             }
-        }else{
+        } else {
             // Send an email to admin and let him know about the invoice payment,
             // and that he must set a Secret Word in the plugin configuration.
             $notifyAdmin = true;
@@ -203,32 +199,32 @@ class Plugin2checkoutCallback extends PluginCallback
     {
         // GET THE CUSTOMER ID
         $CustomerId = 0;
-        if($InvoiceId != 0){
+        if ($InvoiceId != 0) {
             $query = "SELECT `customerid` "
-                    ."FROM `invoice` "
-                    ."WHERE `id` = ? ";
+                ."FROM `invoice` "
+                ."WHERE `id` = ? ";
             $result = $this->db->query($query, $InvoiceId);
             list($tCustomerId) = $result->fetch();
 
-            if(isset($tCustomerId)){
+            if (isset($tCustomerId)) {
                 $CustomerId = $tCustomerId;
             }
         }
 
-        if($Error
-          || $InvoiceId == 0
-          || $CustomerId == 0){
+        if ($Error || $InvoiceId == 0 || $CustomerId == 0) {
             require_once 'modules/admin/models/Error_EventLog.php';
-            $Log = Error_EventLog::newInstance(false,
+            $Log = Error_EventLog::newInstance(
+                false,
                 $CustomerId,
                 $InvoiceId,
                 ERROR_EVENTLOG_2CHECKOUT_CALLBACK,
                 NE_EVENTLOG_USER_SYSTEM,
                 serialize($this->response)
             );
-        }else{
+        } else {
             require_once 'modules/billing/models/Invoice_EventLog.php';
-            $Log = Invoice_EventLog::newInstance(false,
+            $Log = Invoice_EventLog::newInstance(
+                false,
                 $CustomerId,
                 $InvoiceId,
                 INVOICE_EVENTLOG_2CHECKOUT_CALLBACK,
