@@ -36,6 +36,11 @@ class Plugin2checkoutCallback extends PluginCallback
         //Determine if payment was made & make sure that it was not made in demo mode
         if (($lInvoicePaid == 'Y' || $lInvoicePaid == 'K') && $this->response['demo'] != 'Y') {
             if ($this->isFraudTransaction($notifyAdmin)) {
+                if ($this->response['FRAUD REASON'] === 'DUPLICATED TRANSACTION') {
+                    // ignore dupliacted transactions
+                    return;
+                }
+
                 $transaction = "Payment rejected - Reason: FRAUD";
                 $cPlugin->PaymentRejected($transaction, false);
             } else {
@@ -46,6 +51,11 @@ class Plugin2checkoutCallback extends PluginCallback
             //if the payment was made in demo mode let's log it
             if ($this->response['demo']=='Y') {
                 if ($this->isFraudTransaction($notifyAdmin)) {
+                    if ($this->response['FRAUD REASON'] === 'DUPLICATED TRANSACTION') {
+                        // ignore dupliacted transactions
+                        return;
+                    }
+
                     $transaction = "Payment rejected - Reason: FRAUD (DEMO MODE)";
                     $cPlugin->PaymentRejected($transaction, false);
                 } else {
@@ -85,7 +95,7 @@ class Plugin2checkoutCallback extends PluginCallback
                     $mailSend = $mailGateway->mailMessageEmail(
                         array('HTML' => null, 'plainText' => $body),
                         $this->settings->get('Support E-mail'),
-                        $this->settings->get('Support E-mail'),
+                        $this->settings->get('Company Name'),
                         $recipient,
                         '',
                         'ClientExec 2Checkout Security Risk Notification',
@@ -160,7 +170,6 @@ class Plugin2checkoutCallback extends PluginCallback
         list($numTransactions) = $result->fetch();
         if ($numTransactions > 0) {
             $this->response['FRAUD REASON'] = 'DUPLICATED TRANSACTION';
-            $this->_log2CheckoutCallback($tInvoiceId, true);
             return true;
         }
 
