@@ -9,6 +9,11 @@ class Plugin2checkoutCallback extends PluginCallback
 
     function processCallback()
     {
+        // Execute PluginCallback::processCallback() first
+        if (!parent::processCallback()) {
+            return;
+        }
+
         if (isset($_REQUEST['ce_invoice_num'])) {
             $this->response = $_REQUEST;
         } else {
